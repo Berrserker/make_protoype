@@ -113,12 +113,7 @@ install-goose:
 .PHONY: install-godoc
 install-godoc:
 	$(call fn_install_goutil,golang.org/x/tools/cmd/godoc,$(GODOC_VERSION),$(GODOC_BIN))
-
-## install-config-gen: установит наш генератор конфига
-.PHONY: install-config-gen
-install-config-gen:
-	$(call fn_install_goutil,git.hte.team/go/config-gen/cmd,$(CONFIG_VERSION),$(CONFIG_BIN))
-
+	
 .PHONY: install-gomock
 install-gomock:
 	$(call fn_install_goutil,github.com/golang/mock/mockgen,$(GOMOCK_VERSION),$(GOMOCK_BIN))
@@ -159,14 +154,6 @@ lint-default: install-lint
 ifneq ($(wildcard go.mod),)
 	$(LINTER_BIN) run
 endif
-
-## gen-config : generate config from app/config.yaml
-.PHONY: gen-config-default
-gen-config-default: install-config-gen
-	@mkdir -p ./internal/config && \
-		$(CONFIG_BIN) -output "$(CONFIG_CODEGEN_DEST)" -env -target local -efile "$(CONFIG_ENV_DEST)" -file "$(CONFIG_CODEGEN_SOURCE)"
-	@echo "Generating done"
-
 
 ## test : CGO_ENABLED=1 go test -race -count=1 ./...
 .PHONY: test-default
