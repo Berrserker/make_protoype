@@ -195,9 +195,3 @@ doc: install-godoc
 .PHONY: update-awesomemk
 update-awesomemk:
 	$(call copy_file,awesome.mk,awesome.mk)
-
-define copy_file
-	tmpdir=$$(mktemp -d) && \
-	git clone -b ${REPOSITARY_BRANCH} --depth 1 https://git.hte.team/go/awesome-make.git $$tmpdir && \ #TODO: make a makelib repo
-	cp $$tmpdir/${1} ${2}
-endef
