@@ -195,3 +195,7 @@ doc: install-godoc
 .PHONY: update-awesomemk
 update-awesomemk:
 	$(call copy_file,awesome.mk,awesome.mk)
+
+other_make: ## Помощь
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
