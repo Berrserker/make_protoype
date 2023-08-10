@@ -199,3 +199,29 @@ update-awesomemk:
 other_make: ## Помощь
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
+include awesome.mk
+
+awesome.mk:
+	tmpdir=$$(mktemp -d) && \
+	git clone --depth 1 https://gitlab.corp.mail.ru/infra/hotbox/library/go/awesome-make.git $$tmpdir && \
+	cp $$tmpdir/awesome.mk ./
+
+test: ## Запуск тестов
+	@go test -v ./... -tags go_tarantool_ssl_disable,go_tarantool_msgpack_v5
+
+config-gen:
+	goconfig generate --file ./config/config_to_generate.yml --dest ./internal/config/config.go
+
+puml:
+	goplantuml -aggregate-private-members -show-compositions   -show-aliases  -show-implementations -recursive   -show-aggregations -hide-private-members -output toucher.puml .
+
+lint: install-lint lint-default
+
+build:
+	go build -tags=go_tarantool_ssl_disable,go_tarantool_msgpack_v5 -o go_hitrod_daemon ./cmd/daemon
+
+lint-ci: install-lint
+	$(LINTER_BIN) run  --issues-exit-code 1 --out-
+
+set_default_linter: default_linter
+	mv example.golangci.pipeline.yaml .golangci.pipeline.yaml
